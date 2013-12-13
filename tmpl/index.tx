@@ -5,16 +5,20 @@
 <main>
 : if $user {
   <div>
-    <div role="tweet-form">
+    <form role="tweet-form">
       <textarea id="tweet-text" cols="30" rows="10"></textarea>
       <button id="tweet-button">Tweet</button>
     </form>
   </div>
-: }
 
   <h3>Tweets</h3>
   <div id="tweets">
   </div>
+
+  <h3>Favorite</h3>
+  <div id="favorites">
+  </div>
+: }
 
   <h3>Users</h3>
   <div id="users">
@@ -43,60 +47,8 @@
 : }
 </div>
 
-<script>
-(function () {
-  var csrf_token = '<: $csrf_token :>';
+<input type="hidden" id="csrf_token" value="<: $csrf_token :>">
 
-  $.get(
-    '/api/tweets',
-    {},
-    function (data) {
-      var tweets = data.tweets;
-      var $tweets = $('#tweets');
-      var i, len;
-      for (i=0, len=tweets.length; i<len; i++) {
-        var $p = $('<p>').text(tweets[i].text);
-        $('<div>').append($p).appendTo($tweets);
-      }
-    }
-  );
-
-  $.get(
-    '/api/users',
-    {},
-    function (data) {
-      var users = data.users;
-      var $users = $('#users');
-      var i, len;
-      for (i=0, len=users.length; i<len; i++) {
-        var $p = $('<p>').text(users[i].name);
-        $('<div>').append($p).appendTo($users);
-      }
-    }
-  );
-
-  $('#tweet-button').click(function () {
-    var $text = $('#tweet-text')
-    var text = $text.val();
-
-    $text.val('');
-    $text.focus();
-
-    $.post(
-      '/api/tweets',
-      { text: text, csrf_token: csrf_token },
-      function (data) {
-        var tweet = data.tweet;
-        var $p = $('<p>').text(tweet.text);
-        console.log($p);
-        $('<div>').append($p).prependTo($('#tweets'));
-      },
-      'json'
-      );
-    return false;
-  });
-
-})();
-</script>
+<script src="<: uri_for('/static/js/tenysns.js') :>"></script>
 
 : }
